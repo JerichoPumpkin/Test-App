@@ -5,5 +5,5 @@
 
 {% block body %}
     <h1>Edit {#inserisci nome prodotto#}</h1>
-    {#TODO inserisci contenuto#}
+    {{ include('product/form.html.twig', { 'form': form }) }}
 {% endblock %}

@@ -6,9 +6,9 @@
 {% block body %}
     <h1>Create Product</h1>   
     {#TODO inserisci contenuto#}
-    <div>
-        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-        {{ form_widget(form) }}
-        {{ form_end(form) }}
-    </div>
+    {{ include('product/form.html.twig', { 'form': form }) }}
+{% endblock %}
+
+{% block js %}
+    {{ include('product/scripts.html.twig') }}
 {% endblock %}

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Utils\UploadHelper;
 
 /**
  * Product
@@ -18,6 +19,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Product
 {
+    const IMAGE_DEFAULT = 'images/default/product.png';
+
     /**
      * @var int
      *
@@ -90,6 +93,18 @@ class Product
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return ($this->image)? UploadHelper::IMAGE_UPLOAD_PATH.'/'.$this->image : self::IMAGE_DEFAULT;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

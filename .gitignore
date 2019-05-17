@@ -4,7 +4,11 @@
 /.env.local.php
 /.env.*.local
 /public/bundles/
-/public/uploads/
+/public/images/uploads/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> liip/imagine-bundle ###
+/public/media/cache/
+###< liip/imagine-bundle ###
