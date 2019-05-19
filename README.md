@@ -29,6 +29,6 @@ Also Php needs Composer and GD, along with the libpng-dev and libjpeg62-turbo-de
 
 If you plan to stage the project locally with Docker, remeber to swap to the mysql container before executing the last 2 steps.
 Also you will need to modifiy these files: 
-- **.env** comment line 27 and uncomment line 28   
-- **/config/doctrine.yaml** comment line 6 and uncomment line 7
+- **/sf4/.env** comment line 27 and uncomment line 28   
+- **/sf4/config/packages/doctrine.yaml** comment line 6 and uncomment line 7
 
