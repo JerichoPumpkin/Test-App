@@ -1,9 +1,15 @@
 {# templates/product/edit.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit {#inserisci nome prodotto#}{% endblock %}
+{% block css %}{{ include('product/style.html.twig') }}{% endblock %}
+
+{% block title %}Edit {{ form.vars.data.name }}{% endblock %}
 
 {% block body %}
-    <h1>Edit {#inserisci nome prodotto#}</h1>
+    <h1>Edit {{ form.vars.data.name }}</h1>
     {{ include('product/form.html.twig', { 'form': form }) }}
+{% endblock %}
+
+{% block js %}
+    {{ include('product/scripts.html.twig') }}
 {% endblock %}

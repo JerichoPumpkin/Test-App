@@ -24,6 +24,8 @@ class ProductController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->processForm($form);
+            
+            return $this->redirectToRoute('product_edit', array('slug'=> $product->getSlug()));
             //TODO add message to show in list that confirms insert
             //return $this->redirectToRoute('product_list');
         }
@@ -45,10 +47,8 @@ class ProductController extends AbstractController
     /**
      * @Route("/product/{slug}/edit", name="product_edit")
      */
-    public function edit($slug)
+    public function edit(Request $request, Product $product)
     {
-        //TODO get product from slug (or better yet from routing, but we will see)
-        $product = new Product();
         $form = $this->createForm(ProductType::class, $product);    
         
         $form->handleRequest($request);
@@ -66,19 +66,29 @@ class ProductController extends AbstractController
 
     protected function processForm($form){
         $product = $form->getData();
+        
         $uploadedFile = $form['imageFile']->getData();
         if($uploadedFile){
             //UploadHelper manages the logic to move the uploaded file
             $uploaderHelper = new UploadHelper($this->getParameter('kernel.project_dir'));
-            $newFilename = $uploaderHelper->uploadArticleImage($uploadedFile);
+            $newFilename = $uploaderHelper->uploadImage($uploadedFile);
             $product->setImage($newFilename);
         }
-
-        /*
+        
+        $tags = $product->getTag();
+        foreach ($tags as $submitted) {
+            if(!$submitted->getId()){
+                $tag = $this->getDoctrine()->getRepository('App:Tag')->findOneBy(array('name' => $submitted->getName()));
+                if ($tag) {
+                    $product->removeTag($submitted);
+                    $product->addTag($tag);
+                }
+            }    
+        }
+        
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($product);
         $entityManager->flush();
-        */
     }
 }
 

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Utils\UploadHelper;
 
@@ -39,6 +40,14 @@ class Product
     private $name;
 
     /**
+    * @var string
+    *
+    * @Gedmo\Slug(fields={"name"})
+    * @ORM\Column(length=255, unique=true)
+    */
+    protected $slug;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="description", type="text", length=16777215, nullable=true)
@@ -61,11 +70,31 @@ class Product
     private $created;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @Assert\Count(
+     *      min = 1,
+     *      minMessage = "You must specify at least one tag"
+     * )
+     * 
+     * @ORM\ManyToMany(targetEntity="Tag", inversedBy="product", cascade={"persist"})
+     * @ORM\JoinTable(name="product_tag",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="product_id", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="tag_id", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private $tag;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        
+        $this->tag = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,6 +113,18 @@ class Product
 
         return $this;
     }
+    
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
 
     public function getDescription(): ?string
     {
@@ -99,7 +140,7 @@ class Product
 
     public function getImage(): ?string
     {
-        return ($this->image)? UploadHelper::IMAGE_UPLOAD_PATH.'/'.$this->image : self::IMAGE_DEFAULT;
+        return ($this->image)? UploadHelper::IMAGE_PATH.'/'.$this->image : '';
     }
 
     public function setImage(?string $image): self
@@ -112,5 +153,33 @@ class Product
     public function getCreated(): ?\DateTimeInterface
     {
         return $this->created;
+    }
+
+    /**
+     * @return Collection|Tag[]
+     */
+    public function getTag(): Collection
+    {
+        return $this->tag;
+    }
+
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tag->contains($tag)) {
+            $this->tag[] = $tag;
+            $tag->addProduct($this);
+        }
+        
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        if ($this->tag->contains($tag)) {
+            $this->tag->removeElement($tag);
+            $tag->removeProduct($this);
+        }
+
+        return $this;
     }
 }

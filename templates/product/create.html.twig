@@ -1,11 +1,12 @@
 {# templates/product/create.html.twig #}
 {% extends 'base.html.twig' %}
 
+{% block css %}{{ include('product/style.html.twig') }}{% endblock %}
+
 {% block title %}Create Product{% endblock %}
 
 {% block body %}
     <h1>Create Product</h1>   
-    {#TODO inserisci contenuto#}
     {{ include('product/form.html.twig', { 'form': form }) }}
 {% endblock %}
 
