@@ -1,0 +1,121 @@
+{# templates/product/_form_scripts.html.twig #}
+{# script to style "Save" btn, it's faster this way than editing the form theme#}
+<script>
+    $("#product_save").addClass("btn-block").html('<i class="fas fa-save mr-1"></i>'+$("#product_save").html());
+</script>
+{# script to manage image upload #}
+<script>
+    // show uploaded filename in the bootstrap 4 inputfile && preview image
+    var reader = new FileReader();
+    $('#product_imageFile').on('change', function(event) {
+        var inputFile = event.currentTarget;
+        if(inputFile){
+            $(inputFile).parent().find('.custom-file-label').html(inputFile.files[0].name);
+            readURL(this);
+            $('#img-reset').removeClass('d-none');
+            $('#img-info').addClass('d-none');
+        }
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            reader.onload = function(e) {
+                $('#img-preview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    // reset the image to default cleaning both input file and hidden field, sets the preview to default image
+    $('#img-reset').on('click', function(event){
+        $('#product_imageFile').val(null);
+        $('.custom-file-label').html('Select an image');
+        $('#product_image').val(null);
+        $('#img-preview').attr('src', $('#img-reset').attr('default-img'));
+        $('#img-reset').addClass('d-none');
+        $('#img-info').removeClass('d-none');
+    });
+    
+</script>
+{# script to manage tags #}
+<script>
+    // get the container of our tag fields 
+    var collectionHolder = $('div.tags');
+    
+    // we need also both the input and the button to add a tag 
+    var addTagField = $('#product_addTag');
+    var addTagBtn = $('#addTag-btn');
+
+    function addTagForm($collectionHolder, value) {
+        if(value){
+            // check if duplicate
+            value = value.toLowerCase();
+            var count = collectionHolder.find(':hidden[value="' + value + '"]').length;
+            if(count == 0){
+                // Get the data-prototype explained earlier
+                var prototype = collectionHolder.data('prototype');
+
+                // get the new index
+                var index = collectionHolder.data('index');
+
+                var newForm = prototype;
+                // Replace '__name__' in the prototype's HTML to
+                // instead be a number based on how many items we have
+                newForm = newForm.replace(/__name__/g, index);
+
+                // increase the index with one for the next item
+                collectionHolder.data('index', index + 1);
+
+                // Display the tag in the page in a alert styled div, with a remove button
+                var newFormDiv = $('<div class="tag-wrapper mr-1 d-inline-block alert alert-primary alert-dismissible border-primary"></div>');
+                newFormDiv.html(value);
+                newFormDiv.append($('<button type="button" class="close"></button>').append($('<span class="fas fa-times-circle"></span>')));
+                newFormField = $($(newForm).find(':hidden')[0]);
+                newFormField.addClass('tag-field');
+                newFormField.val(value);
+                newFormDiv.append(newFormField);
+                collectionHolder.append(newFormDiv);
+
+                // add a delete link to the new form
+                setTagFormDeleteLink(newFormDiv);
+            }else{
+                // show the original tag field if duplicate
+                collectionHolder.find(':hidden[value="' + value + '"]').parent().addClass('border-primary');
+            }
+        }
+
+        addTagField.val(null);
+        addTagBtn.blur();
+
+    }
+
+    function setTagFormDeleteLink(tagFormDiv) {
+        var removeFormButton = tagFormDiv.find('.close');
+        removeFormButton.on('click', function(e) {
+            // remove the tag
+            tagFormDiv.remove();
+        });
+    }
+
+    jQuery(document).ready(function() {
+        // add a delete link to all of the existing tag form li elements
+        collectionHolder.find('.tag-wrapper').each(function() {
+            setTagFormDeleteLink($(this));
+        });
+
+        // count the current form inputs we have (e.g. 2), use that as the new
+        // index when inserting a new item (e.g. 2)
+        collectionHolder.data('index', collectionHolder.find(':hidden').length);
+
+        // remove highlight to latest added tag    
+        addTagField.on('focus', function(e){
+            collectionHolder.find(':hidden').parent().removeClass('border-primary');
+        });    
+
+        // add a new tag form or restore a removed one
+        addTagBtn.on('click', function(e) {
+            e.preventDefault();
+            addTagForm(collectionHolder, addTagField.val());
+        });
+        
+    });
+</script>

@@ -1,0 +1,29 @@
+{# templates/home/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome{% endblock %}
+{% block breadcrumb %}
+    <nav>
+        <ol class="breadcrumb pl-0 mb-0">
+            <li class="breadcrumb-item active">Home</li>
+        </ol>
+    </nav>
+{% endblock %}
+{% block body %}
+<div>
+    <h1>Welcome</h1>
+    {{ parent() }}
+    <p>This is a basic app to showcase basic functionalities of a backoffice.<br/>
+    To begin click "Create Product" and start adding some items to your app.<br/>
+    You can also see some example items clicking "Product List".
+    </p>
+    <div class="row">
+        <div class="col-sm-3">
+            <a class="btn btn-primary btn-block" href="{{ path('product_create') }}"><i class="fas fa-plus mr-2"></i>Create Product</a>
+        </div>  
+        <div class="col-sm-3">
+            <a class="btn btn-primary btn-block" href="{{ path('product_list') }}"><i class="fas fa-list mr-2"></i>Product List</a>
+        </div>  
+    </div>    
+</div>    
+{% endblock %}

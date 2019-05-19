@@ -1,0 +1,51 @@
+{# templates/product/_form.html.twig #}
+<div class="row">
+    <div class="col-sm-9">
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            {{form_row(form.name)}}
+            {{ form_row(form.imageFile, {'attr': {'placeholder': 'Select an image'}}) }}
+            {{form_row(form.description)}}
+            <label class="required" for="product_addTag">Tags</label>
+            <div class="input-group mb-3">
+                {{ form_widget(form.addTag, {'attr': {'placeholder': 'Insert a tag'}}) }}
+                <div class="inmput-group-append">
+                    <button id="addTag-btn" class="btn btn-outline-primary">Add Tag</button>
+                </div>
+            </div>
+            <div class="tags" data-prototype="{{ form_widget(form.tag.vars.prototype)|e('html_attr') }}">
+                {# iterate over each existing tag and render its only field: name #}
+                {% for tag in form.tag %}
+                    <div class="tag-wrapper mr-1 d-inline-block alert alert-primary alert-dismissible">
+                        {{tag.vars.data.name}}
+                        <button type="button" class="close">
+                            <span class="fas fa-times-circle"></span>
+                        </button>
+                        {{ form_widget(tag.name, {'attr':{'class':'tag-field'}}) }}
+                    </div>
+                {% endfor %}
+            </div>
+            {# we also must render the hidden fields #}
+            {{ form_widget(form.image) }}
+            {# errors unrelated to specific fields #}
+            {{ form_errors(form) }}
+            <hr class="mt-0"/>
+            {# last, submit button #}
+            <div class="row">
+                <div class="col-sm-3">    
+                    {{form_row(form.save)}}
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+    <div class="col-sm-3">
+        {% if form.vars.data.image != '' %}
+        <img id="img-preview" class="img-fluid" src="{{ asset(form.vars.data.image) }}">
+        <button id="img-reset" class="mt-2 btn btn-outline-primary btn-block" default-img="{{ asset(constant('App\\Entity\\Product::IMAGE_DEFAULT'))}}">Reset to Default Image</button>
+        <div id="img-info" class="d-none text-center">Default image</div>
+        {% else %}
+        <img id="img-preview" class="img-fluid" src="{{ asset(constant('App\\Entity\\Product::IMAGE_DEFAULT')) }}">
+        <button id="img-reset" class="d-none mt-2 btn btn-outline-primary btn-block" default-img="{{ asset(constant('App\\Entity\\Product::IMAGE_DEFAULT'))}}">Reset to Default Image</button>
+        <div id="img-info" class="text-center">Default image</div>
+        {% endif %}
+    </div>
+</div>

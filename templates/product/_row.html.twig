@@ -1,0 +1,16 @@
+{# templates/product/_row.html.twig #}
+<div class="row">
+    <div class="col-sm-8">
+        <a href="{{ path('product_edit', {'slug': product.slug}) }}">
+            {% if (product.image != '') %}
+            <img class="d-inline-block mr-1" src="{{ asset(product.image) | imagine_filter('squared_thumbnail') }} "/>
+            {% else %}
+            <img class="d-inline-block mr-1" src="{{ asset(constant('App\\Entity\\Product::IMAGE_DEFAULT')) | imagine_filter('squared_thumbnail') }} "/>
+            {% endif %}{{ product.name }}
+        </a>
+    </div> 
+    <div class="col-sm-4 d-flex align-items-center">
+        <span class="d-inline-block">{{ product.created|date("d/m/Y h:i:s") }}</span>
+    </div>
+</div>  
+<hr/>
