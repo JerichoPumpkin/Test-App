@@ -36,6 +36,7 @@ class Tag
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Product", mappedBy="tag")
+     * @ORM\OrderBy({"created" = "ASC", "name" = "ASC"})
      */
     private $product;
 

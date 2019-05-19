@@ -13,6 +13,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ProductController extends AbstractController
 {
     /**
+     * @Route("/product/list", name="product_list")
+     */
+    public function list()
+    {
+        
+        return $this->render('product/list.html.twig');
+    }
+
+    /**
      * @Route("/product/create", name="product_create")
      */
     public function create(Request $request)
@@ -21,27 +30,17 @@ class ProductController extends AbstractController
         $form = $this->createForm(ProductType::class, $product);    
         
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->processForm($form);
-            
-            return $this->redirectToRoute('product_edit', array('slug'=> $product->getSlug()));
-            //TODO add message to show in list that confirms insert
-            //return $this->redirectToRoute('product_list');
+            $product = $this->processForm($form);
+            // set a nice success message
+            $this->addFlash('success', sprintf('Product "%s" successfully created.', $product->getName()));
+            return $this->redirectToRoute('product_list');
         }
 
         return $this->render('product/create.html.twig', [
             'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * @Route("/product/list", name="product_list")
-     */
-    public function list()
-    {
-        //TODO ahiahiahi
-        return $this->render('product/list.html.twig');
     }
 
     /**
@@ -54,9 +53,10 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->processForm($form);
-            //TODO add message to show in list that confirms edit
-            //return $this->redirectToRoute('product_list');
+            $product = $this->processForm($form);
+            // set a nice success message
+            $this->addFlash('success', sprintf('Product "%s" successfully saved.', $product->getName()));
+            return $this->redirectToRoute('product_list');
         }
 
         return $this->render('product/edit.html.twig', [
@@ -69,16 +69,20 @@ class ProductController extends AbstractController
         
         $uploadedFile = $form['imageFile']->getData();
         if($uploadedFile){
-            //UploadHelper manages the logic to move the uploaded file
+            // UploadHelper manages the logic to move the uploaded file
             $uploaderHelper = new UploadHelper($this->getParameter('kernel.project_dir'));
+            // returns the fresh filename, so we set it
             $newFilename = $uploaderHelper->uploadImage($uploadedFile);
             $product->setImage($newFilename);
         }
-        
+
+        // we need to manually check for Tags entity already in the db, to avoid INSERT of a duplicate unique name field
+        // since those added in this submit are missing the id field
         $tags = $product->getTag();
         foreach ($tags as $submitted) {
             if(!$submitted->getId()){
                 $tag = $this->getDoctrine()->getRepository('App:Tag')->findOneBy(array('name' => $submitted->getName()));
+                // it's already in the Tag table, so we substitute the submitted entity
                 if ($tag) {
                     $product->removeTag($submitted);
                     $product->addTag($tag);
@@ -86,9 +90,13 @@ class ProductController extends AbstractController
             }    
         }
         
+        // save to db
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($product);
         $entityManager->flush();
+
+        // return the updated entity in case we need its values
+        return $product;
     }
 }
 

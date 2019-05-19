@@ -2,8 +2,16 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Products List{% endblock %}
-
+{% block breadcrumb %}
+    <nav>
+        <ol class="breadcrumb pl-0  mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+            <li class="breadcrumb-item active">Products</li>
+        </ol>
+    </nav>
+{% endblock %}
 {% block body %}
     <h1>Products List</h1>
-    {#TODO inserisci contenuto#}
+    {{ parent() }}
+
 {% endblock %}
