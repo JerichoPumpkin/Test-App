@@ -20,9 +20,7 @@ Also Php needs Composer and GD, along with the libpng-dev and libjpeg62-turbo-de
 
 # Installation Guide
 
-- Open the command prompt on your php server and install Symfony 4 with Composer using the command
-
-*composer create-project symfony/website-skeleton sf4*
+- Open the command prompt on your php server and install Symfony 4 with Composer using the command *composer create-project symfony/website-skeleton sf4*
 - Copy the project files in the newly created folder /sf4 (overwrite if prompted)
 - Go to /sf4 and run *composer install* to install dependencies
 - Login to mysql: *mysql -u root -p* and create a new user:
