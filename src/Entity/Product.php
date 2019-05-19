@@ -15,7 +15,7 @@ use App\Utils\UploadHelper;
  * Product
  *
  * @ORM\Table(name="product", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQUE_NAME", columns={"name"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
  * @UniqueEntity("name")
  */
 class Product
@@ -182,4 +182,5 @@ class Product
 
         return $this;
     }
+    
 }

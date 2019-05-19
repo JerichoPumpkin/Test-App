@@ -1,7 +1,13 @@
 FROM php:7.2.3-fpm
 
-RUN apt-get update && apt-get install -y --no-install-recommends vim curl debconf subversion git apt-transport-https apt-utils build-essential locales acl mailutils wget zip unzip gnupg gnupg1 gnupg2 libpng-dev
+RUN apt-get update && apt-get install -y --no-install-recommends vim curl debconf subversion git apt-transport-https apt-utils \
+    build-essential locales acl mailutils wget zip unzip gnupg gnupg1 gnupg2 libpng-dev libjpeg62-turbo-dev
 RUN docker-php-ext-install pdo pdo_mysql
+
+RUN docker-php-ext-configure gd \
+        --with-png-dir=/usr/lib/ \
+        --with-jpeg-dir=/usr/lib/ \
+        --with-gd
 RUN docker-php-ext-install gd
 
 COPY php.ini /etc/php/7.2.3/php.ini

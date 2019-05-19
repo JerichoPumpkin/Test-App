@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Repository\ProductRepository;
 use App\Form\Type\ProductType;
 use App\Utils\UploadHelper;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,10 +18,27 @@ class ProductController extends AbstractController
     /**
      * @Route("/product/list", name="product_list")
      */
-    public function list()
+    public function list(Request $request)
     {
+        $tagName = null;
+
+        $form = $this->createFormBuilder()
+            ->add('name', TextType::class)
+            ->add('save', SubmitType::class, ['label' => 'Search'])
+            ->getForm();    
         
-        return $this->render('product/list.html.twig');
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $tagName = $data['name'];
+        }
+        
+        $products = $this->getDoctrine()->getRepository('App:Product')->findByTagName($tagName);
+           
+        return $this->render('product/list.html.twig', [
+            'products' => $products, 'form'=>$form->createView()
+        ]);
     }
 
     /**

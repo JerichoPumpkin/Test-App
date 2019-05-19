@@ -11,7 +11,45 @@
     </nav>
 {% endblock %}
 {% block body %}
-    <h1>Products List</h1>
-    {{ parent() }}
-
+    <div>
+        <div class="row">
+            <div class="col-sm-8">
+                <h1>Products List</h1>
+            </div> 
+            <div class="col-sm-4 d-flex flex-column-reverse">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class':'mb-2'}}) }}
+                    <div class="input-group">
+                        {{form_widget(form.name, {'attr': {'placeholder': 'Search by tag'}})}}
+                        <div class="input-group-append">
+                            {{form_widget(form.save)}}
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+            </div> 
+        </div> 
+        {{ parent() }}
+        <div class="row">
+            <div class="col-sm-8">
+                <strong>Product</strong>
+            </div> 
+            <div class="col-sm-4">
+                <strong>Creation Date</strong>
+            </div>
+        </div>    
+        <hr/>
+        {% if products|length > 0 %}
+            {% for product in products %}
+                {{ include('product/_row.html.twig', { 'product': product }) }}
+            {% endfor %}
+        {% else %}
+        <div class="row">
+            <div class="col-12">
+                <span>No products found.</span>
+            </div>
+        </div>
+        {% endif %}    
+    </div>
+{% endblock %}
+{% block js %}
+    {{ include('product/_list_scripts.html.twig') }}
 {% endblock %}

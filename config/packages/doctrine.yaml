@@ -3,8 +3,8 @@ parameters:
     # This allows you to run cache:warmup even if your
     # environment variables are not available yet.
     # You should not need to change this value.
-    #env(DATABASE_URL): 'mysql://sf4:sf4@127.0.0.1:3306/sf4'
-    env(DATABASE_URL): 'mysql://sf4:sf4@mysql:3306/sf4'
+    env(DATABASE_URL): 'mysql://sf4:sf4@127.0.0.1:3306/sf4'
+    #env(DATABASE_URL): 'mysql://sf4:sf4@mysql:3306/sf4'
 
 doctrine:
     dbal:
